@@ -20,5 +20,9 @@ public class EventosController {
 		System.out.println(evento);
 		return "evento-adicionado";
 		}
+	
+	public void teste() {
+		// método novo
+	}
 
 }
