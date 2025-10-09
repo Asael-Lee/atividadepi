@@ -21,8 +21,7 @@ public class EventosController {
 		return "evento-adicionado";
 		}
 	
-	public void teste() {
-		// método novo
+	
 	}
 
-}
+
