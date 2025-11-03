@@ -81,22 +81,30 @@ public class EventosController {
 	}
 	
 	@PostMapping("/{idEvento}")
-	public String salvarConvidado(@PathVariable Long idEvento, Convidado convidado) {
-		
-		System.out.println("Id do evento: " + idEvento);
-		System.out.println(convidado);
-		
-		Optional<Evento> opt = er.findById(idEvento);
-		if(opt.isEmpty()) {
-			return "redirect:/eventos";
-		}
-		
-		Evento evento = opt.get();
-		convidado.setEvento(evento);
-		
-		cr.save(convidado);
-		
-		return "redirect:/eventos/{idEvento}";
+	public ModelAndView salvarConvidado(
+	        @PathVariable Long idEvento,
+	        @Valid Convidado convidado,
+	        BindingResult result,
+	        RedirectAttributes attributes) {
+
+	    Optional<Evento> opt = er.findById(idEvento);
+	    if (opt.isEmpty()) {
+	        return new ModelAndView("redirect:/eventos");
+	    }
+
+	    Evento evento = opt.get();
+
+	    if (result.hasErrors()) {
+	        ModelAndView md = new ModelAndView("eventos/detalhes");
+	        md.addObject("evento", evento);
+	        md.addObject("convidados", cr.findByEvento(evento));
+	        return md;
+	    }
+
+	    convidado.setEvento(evento);
+	    cr.save(convidado);
+	    attributes.addFlashAttribute("mensagem", "Convidado salvo com sucesso!");
+	    return new ModelAndView("redirect:/eventos/{idEvento}");
 	}
 	
 	@GetMapping("/{idEvento}/selecionar")
